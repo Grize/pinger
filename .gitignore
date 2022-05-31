@@ -1,3 +1,5 @@
 .gitsecret/keys/random_seed
+.gitsecret/keys/**/*~
 !*.secret
 ping_service/config/influx_config.yml
+ping_service/main.rb.pid
