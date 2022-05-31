@@ -1,9 +1,17 @@
 # frozen_string_literal: true
 
-class TestPingerFactory
-  def initialize(ip)
-    @ip = ip
+module TestPingerFactory
+  class TestPinger
+    def initialize(ip)
+      @ip = ip
+    end
+
+    def ping
+      0.40265
+    end
   end
 
-  def call; end
+  def self.create(ip)
+    TestPinger.new(ip)
+  end
 end

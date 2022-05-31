@@ -1,38 +1,26 @@
 # frozen_string_literal: true
 
+require_relative 'pinger_factory'
+
 class PingRunner
-  require_relative 'pinger_factory'
-  require_relative 'influx_client'
+  attr_reader :storage, :ip, :factory
 
-  attr_reader :factory, :ip
-
-  def initialize(factory, ip)
-    @factory = Kernel.const_get(factory)
+  def initialize(storage, factory, ip)
+    @storage = storage
     @ip = ip
+    @factory = factory
   end
 
   def call
-    return 'ip is not provided' if ip.nil?
+    throw 'ip is not provided' if ip.nil?
 
     duration = pinger.ping
-
-    message = if duration
-                "ip,host=#{ip},failed=false response_time=#{duration_in_ms(duration)}"
-              else
-                "ip,host=#{ip},failed=true response_time=0"
-              end
-
-    InfluxClient.new(message).call
-    message
+    storage.call(ip, duration.nil?, duration)
   end
 
   private
 
   def pinger
-    factory.new(ip).call
-  end
-
-  def duration_in_ms(duration)
-    (duration * 1000).round(3)
+    factory.create(ip)
   end
 end
