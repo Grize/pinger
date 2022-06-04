@@ -9,6 +9,8 @@ gem 'connection_pool'
 gem 'daemons'
 gem 'influxdb-client-apis', '>=2.5.0'
 gem 'net-ping'
+gem 'rom'
+gem 'rom-sql'
 
 group :development do
   gem 'pry'
