@@ -4,8 +4,12 @@ source "https://rubygems.org"
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
-gem 'sinatra'
+gem 'influxdb-client-apis', '>=2.5.0'
+gem 'pg'
 gem 'puma'
+gem 'rom'
+gem 'rom-sql'
+gem 'sinatra'
 
 group :development do
   gem 'pry'

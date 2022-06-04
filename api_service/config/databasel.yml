@@ -1,0 +1,14 @@
+efault: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+
+development:
+  <<: *default
+  user: servers_dev_user
+  database: api_service_dev
+
+test:
+  <<: *default
+  user: servers_test_user
+  database: api_service_test

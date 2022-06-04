@@ -1,0 +1,13 @@
+require 'rom'
+require 'rake'
+require 'rom/sql/rake_task'
+require 'pry'
+
+namespace :db do
+  desc 'Create a database'
+
+  task :setup, [:db_name] do |_t, args|
+    system("createdb #{args.db_name}")
+    ROM::SQL::RakeSupport.env = ROM.container(:sql, 'postgres://localhost/api_service_dev', port: 5432)
+  end
+end
