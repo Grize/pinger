@@ -4,4 +4,4 @@ ENV['APP_ENV'] ||= "development"
 
 require 'bundler'
 Bundler.setup(:default, ENV['APP_ENV'])
-require_all 'lib'
+# require_all 'lib'

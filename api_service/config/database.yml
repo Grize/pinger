@@ -1,14 +1,18 @@
 default: &default
-  adapter: postgresql
+  adapter: postgres
   encoding: unicode
   pool: 5
 
 development:
   <<: *default
-  user: servers_dev_user
+  host: localhost
+  user: paulbarn
   database: api_service_dev
+  port: 5432
 
 test:
   <<: *default
+  host: localhost
   user: servers_test_user
   database: api_service_test
+  port: 5432

@@ -3,11 +3,29 @@
 require 'sinatra'
 require 'rom'
 require_relative './config/application'
-require_relative './ip_repo'
+require_relative './lib/ip_repo'
 require_relative './lib/ip_stats'
-require_relative './lib/ip_write'
+require_relative './lib/ips'
 
-include IpStats
+configure do
+  db_config = YAML.load_file("#{settings.root}/config/database.yml")[settings.environment.to_s]
+  influx_config = YAML.load_file("#{settings.root}/config/influx.yml")[settings.environment.to_s]
+  db_url = "#{db_config['adapter']}://#{db_config['host']}/#{db_config['database']}"
+
+  con = ROM.container(:sql, db_url, port: db_config['port'], username: db_config['user']) do |conf|
+    conf.register_relation(Relations::Ips)
+  end
+
+  set :ip_repo_instance, Repos::IpRepo.new(con)
+  set :influx_connection, InfluxDB2::Client.new(
+    influx_config['url'],
+    influx_config['token'],
+    bucket: influx_config['bucket'],
+    org: influx_config['org'],
+    use_ssl: false,
+    precision: InfluxDB2::WritePrecision::NANOSECOND
+  )
+end
 
 post '/add' do
   request.body.rewind
@@ -19,26 +37,29 @@ delete '/delete' do
   request.body.rewind
   data = JSON.parse request.body.read
 
-  record = db.by_ip(data['ip'])
-  record.nil? ? raise('Ip is not exist!') : update_record(false)
+  record = settings.ip_repo_instance.by_ip(data['ip'])
+  record.nil? ? raise('Ip is not exist!') : update_record(data['ip'], false)
 
   'Ip successfully disabled!'
 end
 
 get '/statistic/:ip' do
-  stats(params['ip'], parse_time(params['start_date']), parse_time(params['end_date']))
+  IpStats.stats(
+    settings.influx_connection,
+    params['ip'],
+    parse_time(params['start_date']),
+    parse_time(params['end_date'])
+  )
 end
 
-ApiService::Application.config
-
 def write_ip(ip)
-  record = db.by_ip(ip)
-  record.nil? ? db.create(ip: ip) : update_record(true)
+  record = settings.ip_repo_instance.by_ip(ip)
+  record.nil? ? settings.ip_repo_instance.create(ip: ip) : update_record(true)
   'Ip successfully enabled!'
 end
 
-def update_record(value)
-  db.update(ip, enable: value)
+def update_record(ip, value)
+  settings.ip_repo_instance.update(ip, enable: value)
 end
 
 def parse_time(time)
