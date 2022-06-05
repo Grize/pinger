@@ -1,0 +1,13 @@
+default: &default
+  bucket: servers
+  org: servers
+
+development:
+  <<: *default
+  url: https://localhost:8086
+  token: "wmITzNEQqb-LpNeBTIT4DRbET2OtiwBqQGhoACWNDavst9PV2qPLCI7-Lo4vlZW1hr_2yF-lVql8GR6z7BmTJQ=="
+
+test:
+  <<: *default
+  url: test_token
+  token: test_token

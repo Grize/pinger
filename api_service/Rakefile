@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+require 'rom'
+require 'rom/sql/rake_task'
+
+namespace :db do
+  desc 'Create a database'
+  task :setup do
+    system("createdb #{db_config[database]}")
+    system("createuser #{db_conf['user']}")
+  end
+end

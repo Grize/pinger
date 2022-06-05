@@ -2,6 +2,7 @@
 
 require_relative './lib/ping_runner'
 require_relative './lib/ping_storage'
+require_relative './lib/db_service'
 require 'concurrent'
 require 'connection_pool'
 require 'influxdb-client'
@@ -20,8 +21,9 @@ class PingDaemon
 
   def run
     storage = PingStorage.new(connection)
+    ips = DbService.new.call
     loop do
-      File.read('/Users/paulbarn/Documents/projects/servers_test/ping_service/tmp/ip_list.txt').split.map do |ip|
+      ips.each do |ip|
         Thread.new { PingRunner.new(storage, pinger_factory, ip).call }.join
       end
     end

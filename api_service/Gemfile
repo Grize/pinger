@@ -4,13 +4,13 @@ source "https://rubygems.org"
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
-gem 'concurrent-ruby', require: 'concurrent'
-gem 'connection_pool'
-gem 'daemons'
+gem 'dotenv'
 gem 'influxdb-client-apis', '>=2.5.0'
-gem 'net-ping'
+gem 'pg'
+gem 'puma'
 gem 'rom'
 gem 'rom-sql'
+gem 'sinatra'
 
 group :development do
   gem 'pry'

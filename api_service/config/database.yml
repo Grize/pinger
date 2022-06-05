@@ -1,0 +1,18 @@
+default: &default
+  adapter: postgres
+  encoding: unicode
+  pool: 5
+
+development:
+  <<: *default
+  host: localhost
+  user: paulbarn
+  database: api_service_dev
+  port: 5432
+
+test:
+  <<: *default
+  host: localhost
+  user: servers_test_user
+  database: api_service_test
+  port: 5432
