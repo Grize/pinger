@@ -4,6 +4,8 @@ require 'rom'
 require_relative '../ip_repo'
 require_relative '../ips'
 
+#TODO => move this logic to main.rb
+
 class IpWrite
   attr_reader :ip
 

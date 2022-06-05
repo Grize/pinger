@@ -10,6 +10,7 @@ GEM
       rexml
     diff-lcs (1.5.0)
     docile (1.4.0)
+    dotenv (2.7.6)
     dry-configurable (0.13.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.6)
@@ -142,6 +143,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dotenv
   influxdb-client-apis (>= 2.5.0)
   pg
   pry

@@ -4,17 +4,14 @@ require 'influxdb-client'
 require 'influxdb-client-apis'
 require 'pry'
 
-class IpStats
-  attr_reader :ip, :start_date, :end_date
-
-  def initialize(ip, start_date, end_date)
+module IpStats
+  def stats(ip, start_date, end_date)
     @ip = ip
-    @start_date = DateTime.parse(start_date).rfc3339
-    @end_date = DateTime.parse(end_date).rfc3339
-  end
+    @start_date = start_date
+    @end_date = end_date
 
-  def call
     query_api = influx_client.create_query_api
+
     result = query_api.query(query: query)
     return result.to_json if result.empty?
 
@@ -23,47 +20,47 @@ class IpStats
 
   private
 
+  # TODO => Rewrite query
   def query
-    %(union(tables: [#{min_query},#{max_query},#{mean_query},#{stddev_query}])
+    query_list = [min_query, max_query, mean_query, stddev_query]
+    sub_queries = query_list.map { |sub_query| sub_query[:sub_query] }.join(',')
+
+    %(union(tables: [#{sub_queries}])
       |> pivot(rowKey: ["_start"], columnKey: ["_field"], valueColumn: "_value")
-      |> keep(columns: ["host", "mean_latency", "min_latency", "max_latency", "stddev_latency"])
+      |> keep(columns: #{query_list.map { |sub_query| sub_query[:column] } << 'host'})
     )
   end
 
   def base_query
     %(from(bucket:"servers")
-      |> range(start: #{start_date}, stop: #{end_date})
-      |> filter(fn: (r) => r["_measurement"] == "ip" and r["host"] == "#{ip}")
+      |> range(start: #{@start_date}, stop: #{@end_date})
+      |> filter(fn: (r) => r["_measurement"] == "ip" and r["host"] == "#{@ip}")
       |> group(columns: ["host"])
     )
   end
 
   def min_query
-    %(#{base_query}
-      |> min()
-      |> set(key: "_field", value: "min_latency")
-    )
+    sub_query = %(#{base_query} |> min() |> set(key: "_field", value: "min_latency"))
+
+    { column: 'min_latency', sub_query: sub_query }
   end
 
   def max_query
-    %(#{base_query}
-      |> max()
-      |> set(key: "_field", value: "max_latency")
-    )
+    sub_query = %(#{base_query} |> max() |> set(key: "_field", value: "max_latency"))
+
+    { column: 'max_latency', sub_query: sub_query }
   end
 
   def mean_query
-    %(#{base_query}
-      |> mean()
-      |> set(key: "_field", value: "mean_latency")
-    )
+    sub_query = %(#{base_query} |> mean() |> set(key: "_field", value: "mean_latency"))
+
+    { column: 'mean_latency', sub_query: sub_query }
   end
 
   def stddev_query
-    %(#{base_query}
-      |> stddev()
-      |> set(key: "_field", value: "stddev_latency")
-    )
+    sub_query = %(#{base_query} |> stddev() |> set(key: "_field", value: "stddev_latency"))
+
+    { column: 'stddev_latency', sub_query: sub_query }
   end
 
   def influx_client
