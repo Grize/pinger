@@ -21,6 +21,7 @@ module IpStats
 
     private
 
+    ## TODO => create query builder
     def query
       query_list = [min_query, max_query, mean_query, stddev_query]
       sub_queries = query_list.map { |sub_query| sub_query[:sub_query] }.join(',')

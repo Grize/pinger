@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-require_relative 'config/application'
 require 'rom'
 require 'rom/sql/rake_task'
 
 namespace :db do
   desc 'Create a database'
   task :setup do
-    db_config = IpService::Application.config[:db_conf][ENV['APP_ENV']]
     system("createdb #{db_config[database]}")
     system("createuser #{db_conf['user']}")
   end

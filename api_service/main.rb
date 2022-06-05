@@ -52,6 +52,7 @@ get '/statistic/:ip' do
   )
 end
 
+# TODO => remove method
 def write_ip(ip)
   record = settings.ip_repo_instance.by_ip(ip)
   record.nil? ? settings.ip_repo_instance.create(ip: ip) : update_record(true)
