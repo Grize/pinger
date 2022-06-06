@@ -8,4 +8,8 @@ class TestPingDb
   def list_ips
     @list
   end
+
+  def add_ip(ip)
+    @list << ip
+  end
 end

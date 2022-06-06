@@ -2,8 +2,7 @@
 
 class TestPingerFactory
   class TestPinger
-    def initialize(ip, value)
-      @ip = ip
+    def initialize(value)
       @value = value
     end
 
@@ -19,8 +18,12 @@ class TestPingerFactory
 
   def create(ip)
     value = @state[ip]
-    @counter[ip] = @counter[ip] + 1
-    TestPinger.new(ip, value)
+    @counter[ip] += 1
+    TestPinger.new(value)
+  end
+
+  def add_ip(ip, value)
+    @state[ip] = value
   end
 
   def counter_result

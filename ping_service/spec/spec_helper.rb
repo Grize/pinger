@@ -17,7 +17,6 @@ require 'pry'
 require 'webmock/rspec'
 require 'rom'
 require 'rom-sql'
-require 'timecop'
 require 'influxdb-client'
 require 'influxdb-client-apis'
 require_relative './test_factories/test_pinger_factory'
@@ -25,7 +24,6 @@ require_relative './test_storages/test_ping_storage'
 require_relative './test_storages/test_ping_db'
 require_relative './test_storages/test_iteration_controller'
 
-Timecop.thread_safe = false
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

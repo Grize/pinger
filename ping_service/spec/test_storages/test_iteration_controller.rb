@@ -1,19 +1,36 @@
 # frozen_string_literal: true
 
-require 'concurrent/mvar'
+require 'concurrent-edge'
+require 'concurrent/atomics'
 
 class TestIterationController
-  attr_reader :event
+  attr_reader :event, :cancellation, :origin
 
-  def initialize
-    @event = Concurrent::MVar.new
+  def initialize count
+    @event = Concurrent::Semaphore.new(count - 1)
+    @cancellation, @origin = Concurrent::Cancellation.new
   end
 
   def wait!
-    event.take
+    loop do
+      if event.try_acquire then
+        return
+      else
+        cancellation.check!
+      end
+      sleep 0.001
+    end
   end
 
-  def next!
-    event.put(1)
+  def next!(count = 1)
+    event.release count
+  end
+
+  def abort!
+    origin.resolve
+  end
+
+  def num_pending
+    event.available_permits
   end
 end
