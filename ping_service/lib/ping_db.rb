@@ -7,7 +7,7 @@ class PingDb
     @db_connect = connection
   end
 
-  def ips_list
+  def list_ips
     db_connect.relations[:ips].where(enable: true).to_a.map(&:ip)
   end
 end

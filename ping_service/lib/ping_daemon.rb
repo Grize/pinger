@@ -17,7 +17,7 @@ class PingDaemon
 
   def run
     loop do
-      ips = db.ips_list
+      ips = db.list_ips
       ips.each do |ip|
         Thread.new { PingRunner.new(influx, pinger_factory, ip).call }.join
       end

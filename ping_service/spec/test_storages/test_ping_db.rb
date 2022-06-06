@@ -5,7 +5,7 @@ class TestPingDb
     @list = list
   end
 
-  def ips_list
+  def list_ips
     @list
   end
 end

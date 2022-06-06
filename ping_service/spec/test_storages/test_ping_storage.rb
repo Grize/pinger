@@ -5,10 +5,16 @@ class TestPingStorage
 
   def initialize(connection)
     @connection = connection
+    @calls = []
   end
 
   def call(ip, failed, duration)
+    @calls << [ip, failed, duration]
     "ip,host=#{ip},failed=#{failed} response_time=#{duration_in_ms(duration)}"
+  end
+
+  def list_calls
+    @calls
   end
 
   private
