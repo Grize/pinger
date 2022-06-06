@@ -5,6 +5,13 @@ require 'influxdb-client-apis'
 require 'pry'
 
 module IpStats
+  QUERY_LIST = [
+    { name: 'min_latency', function: 'min()' },
+    { name: 'max_latency', function: 'max()' },
+    { name: 'mean_latency', function: 'mean()' },
+    { name: 'stddev_latency', function: 'stddev()' }
+  ].freeze
+
   class << IpStats
     def stats(influx, ip, start_date, end_date)
       @ip = ip
@@ -21,9 +28,8 @@ module IpStats
 
     private
 
-    ## TODO => create query builder
     def query
-      query_list = [min_query, max_query, mean_query, stddev_query]
+      query_list = QUERY_LIST.map { |sub_query| build_query(sub_query[:function], sub_query[:name]) }
       sub_queries = query_list.map { |sub_query| sub_query[:sub_query] }.join(',')
 
       %(union(tables: [#{sub_queries}])
@@ -40,28 +46,10 @@ module IpStats
       )
     end
 
-    def min_query
-      sub_query = %(#{base_query} |> min() |> set(key: "_field", value: "min_latency"))
+    def build_query(function, column_name)
+      sub_query = %(#{base_query} |> #{function} |> set(key: "_field", value: "#{column_name}"))
 
-      { column: 'min_latency', sub_query: sub_query }
-    end
-
-    def max_query
-      sub_query = %(#{base_query} |> max() |> set(key: "_field", value: "max_latency"))
-
-      { column: 'max_latency', sub_query: sub_query }
-    end
-
-    def mean_query
-      sub_query = %(#{base_query} |> mean() |> set(key: "_field", value: "mean_latency"))
-
-      { column: 'mean_latency', sub_query: sub_query }
-    end
-
-    def stddev_query
-      sub_query = %(#{base_query} |> stddev() |> set(key: "_field", value: "stddev_latency"))
-
-      { column: 'stddev_latency', sub_query: sub_query }
+      { column: column_name, sub_query: sub_query }
     end
   end
 end
