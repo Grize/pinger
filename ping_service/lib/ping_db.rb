@@ -3,11 +3,11 @@
 class PingDb
   attr_reader :db_connect
 
-  def initialize(connect)
-    @db_connect = connect
+  def initialize(connection)
+    @db_connect = connection
   end
 
   def ips_list
-    connect.relations[:ips].where(enable: true).to_a.map(&:ip)
+    db_connect.relations[:ips].where(enable: true).to_a.map(&:ip)
   end
 end

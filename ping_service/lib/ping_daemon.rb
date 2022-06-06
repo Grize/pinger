@@ -16,11 +16,10 @@ class PingDaemon
   end
 
   def run
-    storage = PingStorage.new(influx)
     loop do
       ips = db.ips_list
       ips.each do |ip|
-        Thread.new { PingRunner.new(storage, pinger_factory, ip).call }.join
+        Thread.new { PingRunner.new(influx, pinger_factory, ip).call }.join
       end
       break if @aborted
       sleep(60)

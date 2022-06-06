@@ -19,7 +19,6 @@ class TestPingerFactory
 
   def create(ip)
     value = @state[ip]
-    binding.pry
     @counter[ip] = @counter[ip] + 1
     TestPinger.new(ip, value)
   end
