@@ -23,11 +23,12 @@ class PingDaemon
         ips.each do |ip|
           Thread.new { PingRunner.new(influx, pinger_factory, ip).call }.join
         end
-        break if @aborted.true?
+        break if aborted.true?
+        print "Here"
 
         sleep(60)
       end
-    end
+    end.join
   end
 
   def abort!

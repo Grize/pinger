@@ -33,8 +33,9 @@ RSpec.describe PingDaemon do
       let(:ips) { { '64.233.164.102' => 0.40265 } }
 
       it 'does ping to required addresses' do
-        daemon.abort!
         daemon.run
+        Timecop.freeze(120)
+        daemon.abort!
         expect(test_ping_factory.counter_result.keys).to eq(ips.keys)
         expect(test_ping_factory.counter_result.values).to eq([1])
       end
