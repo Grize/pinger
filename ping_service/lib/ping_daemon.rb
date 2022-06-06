@@ -6,14 +6,15 @@ require 'concurrent'
 require 'concurrent/atomics'
 
 class PingDaemon
-  attr_reader :db, :influx, :pinger_factory, :thread_pool, :aborted
+  attr_reader :db, :influx, :pinger_factory, :thread_pool, :aborted, :time_controller
 
-  def initialize(db, influx, pinger_factory, pool_size)
+  def initialize(db, influx, pinger_factory, pool_size, time_controller)
     @db = db
     @influx = influx
     @pinger_factory = pinger_factory
     @thread_pool = Concurrent::ThreadPoolExecutor.new(min_threads: 1, max_threads: pool_size)
     @aborted = Concurrent::AtomicBoolean.new
+    @time_controller = time_controller
   end
 
   def run
@@ -25,7 +26,7 @@ class PingDaemon
         end
         break if aborted.true?
 
-        sleep(60)
+        time_controller.wait!
       end
     end.join
   end

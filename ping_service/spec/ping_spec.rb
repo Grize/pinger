@@ -7,6 +7,7 @@ RSpec.describe PingDaemon do
     let!(:test_ping_db) { TestPingDb.new(ips.keys) }
     let!(:influx) { TestPingStorage.new('test_connection') }
     let!(:test_ping_factory) { TestPingerFactory.new(ips) }
+    let!(:test_time_controller) { TestTimeIterationController.new(time) }
 
     let(:daemon) { described_class.new(test_ping_db, influx, test_ping_factory, 10) }
 
