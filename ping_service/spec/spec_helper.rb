@@ -23,6 +23,7 @@ require 'influxdb-client-apis'
 require_relative './test_factories/test_pinger_factory'
 require_relative './test_storages/test_ping_storage'
 require_relative './test_storages/test_ping_db'
+require_relative './test_storages/test_iteration_controller'
 
 Timecop.thread_safe = false
 RSpec.configure do |config|

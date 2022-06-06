@@ -2,7 +2,7 @@
 
 require_relative './lib/ping_daemon'
 require_relative './lib/ping_db'
-require_relative './lib/time_iteration_controller'
+require_relative './lib/iteration_controller'
 require 'rom'
 require 'rom-sql'
 require 'connection_pool'
@@ -35,7 +35,7 @@ end
 influx = PingStorage.new(influx_connection)
 db = PingDb.new(db_connection)
 
-PingDaemon.new(db, influx, PingerFactory, 10, TimeIterationController.new(60)).run
+PingDaemon.new(db, influx, PingerFactory, 10, IterationController.new(60)).run
 
 
 ## TODO => планировщик

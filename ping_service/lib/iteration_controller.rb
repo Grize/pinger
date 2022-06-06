@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TimeIterationController
+class IterationController
   attr_reader :time
 
   def initialize(time)
