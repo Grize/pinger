@@ -15,6 +15,10 @@
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'pry'
 require 'webmock/rspec'
+require 'rom'
+require 'rom-sql'
+require 'influxdb-client'
+require 'influxdb-client-apis'
 require_relative './test_factories/test_pinger_factory'
 require_relative './test_storages/test_ping_storage'
 RSpec.configure do |config|

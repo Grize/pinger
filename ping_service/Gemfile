@@ -11,6 +11,7 @@ gem 'influxdb-client-apis', '>=2.5.0'
 gem 'net-ping'
 gem 'rom'
 gem 'rom-sql'
+gem 'pg'
 
 group :development do
   gem 'pry'

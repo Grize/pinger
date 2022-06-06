@@ -12,6 +12,7 @@ class PingDaemon
     @influx = influx
     @pinger_factory = pinger_factory
     @thread_pool = Concurrent::ThreadPoolExecutor.new(min_threads: 1, max_threads: pool_size)
+    @aborted = false
   end
 
   def run
@@ -21,6 +22,12 @@ class PingDaemon
       ips.each do |ip|
         Thread.new { PingRunner.new(storage, pinger_factory, ip).call }.join
       end
+      break if @aborted
+      sleep(60)
     end
+  end
+
+  def abort!
+    @aborted = true
   end
 end
