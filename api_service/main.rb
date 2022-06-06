@@ -2,7 +2,7 @@
 
 require 'sinatra'
 require 'rom'
-require_relative './config/application'
+require 'yaml'
 require_relative './lib/ip_repo'
 require_relative './lib/ip_stats'
 require_relative './lib/ips'
@@ -30,7 +30,11 @@ end
 post '/add' do
   request.body.rewind
   data = JSON.parse request.body.read
-  write_ip(data['ip'])
+
+  record = settings.ip_repo_instance.by_ip(data['ip'])
+  record.nil? ? settings.ip_repo_instance.create(ip: ip) : update_record(ip, true)
+
+  'Ip successfully enabled!'
 end
 
 delete '/delete' do
@@ -50,13 +54,6 @@ get '/statistic/:ip' do
     parse_time(params['start_date']),
     parse_time(params['end_date'])
   )
-end
-
-# TODO => remove method
-def write_ip(ip)
-  record = settings.ip_repo_instance.by_ip(ip)
-  record.nil? ? settings.ip_repo_instance.create(ip: ip) : update_record(true)
-  'Ip successfully enabled!'
 end
 
 def update_record(ip, value)

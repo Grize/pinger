@@ -2,12 +2,12 @@
 
 ROM::SQL.migration do
   change do
-    # TODO => change primary key to ip
+    ## TODO => set ip as primary_key
     create_table :ips do
-      primary_key :ip, String
+      column :ip, String, null: false
       column :enable, TrueClass, default: true
 
-      index :ip
+      primary_key :ip
     end
   end
 end

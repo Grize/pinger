@@ -2,11 +2,16 @@
 
 require 'rom'
 require 'rom/sql/rake_task'
+require 'yaml'
+require 'pry'
 
 namespace :db do
   desc 'Create a database'
   task :setup do
-    system("createdb #{db_config[database]}")
-    system("createuser #{db_conf['user']}")
+    root = File.expand_path('..', __dir__)
+    db_config = YAML.load_file("#{root}/api_service/config/database.yml")[ENV['APP_ENV']]
+    db_url = "#{db_config['adapter']}://#{db_config['host']}/#{db_config['database']}"
+    config = ROM::Configuration.new(:sql, db_url, port: db_config['port'], username: db_config['user'])
+    ROM::SQL::RakeSupport.env = config
   end
 end
