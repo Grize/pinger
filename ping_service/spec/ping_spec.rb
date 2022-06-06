@@ -37,33 +37,73 @@ RSpec.describe PingDaemon do
     context 'Adding and removing addresses' do
       let(:initial_iteration_count) { 4 }
       let(:additional_iteration_count) { 4 }
-      let(:additional_ips) { { '1.1.1.1' => 0.31415 } }
-      let(:expected_result) do
-        result = {}
-        ips.each { |ip, _|  result[ip] = initial_iteration_count + additional_iteration_count }
-        additional_ips.each { |ip, _| result[ip] = additional_iteration_count }
-        result
+
+      context "Adding addresses" do
+        let(:additional_ips) { { '1.1.1.1' => 0.31415 } }
+        let(:expected_result) do
+          result = {}
+          ips.each { |ip, _|  result[ip] = initial_iteration_count + additional_iteration_count }
+          additional_ips.each { |ip, _| result[ip] = additional_iteration_count }
+          result
+        end
+
+        it 'handles adding addresses after start' do
+          pr = daemon.run
+          until test_time_controller.num_pending == 0 do
+            sleep 0.01
+          end
+
+          expect(test_ping_factory.counter_result.keys).to eq(ips.keys)
+          expect(test_ping_factory.counter_result.values).to eq([initial_iteration_count])
+
+          additional_ips.each do |ip, value|
+            test_ping_db.add_ip(ip)
+            test_ping_factory.add_ip(ip, value)
+          end
+
+          test_time_controller.next!(additional_iteration_count)
+          test_time_controller.abort!
+          pr.wait!
+
+          expect(test_ping_factory.counter_result).to eq(expected_result)
+        end
       end
 
-      it 'handles adding addresses after start' do
-        pr = daemon.run
-        until test_time_controller.num_pending == 0 do
-          sleep 0.01
+      context "Removing addresses" do
+        let(:ips) do
+          {
+            '64.233.164.102' => 0.40265,
+            '1.1.1.1' => 0.31415
+          }
         end
 
-        expect(test_ping_factory.counter_result.keys).to eq(ips.keys)
-        expect(test_ping_factory.counter_result.values).to eq([initial_iteration_count])
+        let(:deleted_ip) { '1.1.1.1' }
 
-        additional_ips.each do |ip, value|
-          test_ping_db.add_ip(ip)
-          test_ping_factory.add_ip(ip, value)
+        let(:expected_result) do
+          result = {}
+          ips.each { |ip, _|  result[ip] = initial_iteration_count + additional_iteration_count }
+          result[deleted_ip] = initial_iteration_count
+          result
         end
 
-        test_time_controller.next!(additional_iteration_count)
-        test_time_controller.abort!
-        pr.wait!
+        it 'handles deleting addresses after start' do
+          pr = daemon.run
 
-        expect(test_ping_factory.counter_result).to eq(expected_result)
+          until test_time_controller.num_pending == 0 do
+            sleep 0.01
+          end
+
+          expect(test_ping_factory.counter_result.keys).to eq(ips.keys)
+          expect(test_ping_factory.counter_result.values).to eq([initial_iteration_count, initial_iteration_count])
+
+          test_ping_db.delete_ip(deleted_ip)
+
+          test_time_controller.next!(additional_iteration_count)
+          test_time_controller.abort!
+          pr.wait!
+
+          expect(test_ping_factory.counter_result).to eq(expected_result)
+        end
       end
     end
   end

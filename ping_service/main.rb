@@ -17,6 +17,7 @@ db_config = YAML.load_file("#{root}/ping_service/config/database.yml")[ENV['APP_
 db_url = "#{db_config['adapter']}://#{db_config['host']}/#{db_config['database']}"
 
 db_connection = ROM.container(:sql, db_url, port: db_config['port'], username: db_config['user']) do |config|
+  config.gateways[:default].use_logger(Logger.new($stdout))
   config.relation(:ips) do
     schema(infer: true)
     auto_struct true
@@ -36,7 +37,3 @@ influx = PingStorage.new(influx_connection)
 db = PingDb.new(db_connection)
 
 PingDaemon.new(db, influx, PingerFactory, 10, IterationController.new(60)).run
-
-
-## TODO => планировщик
-## 1) планировщик 

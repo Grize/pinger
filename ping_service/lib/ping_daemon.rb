@@ -16,7 +16,7 @@ class PingDaemon
   end
 
   def run
-    Concurrent::Promises.future(thread_pool) do |thread_pool|
+    Concurrent::Promises.future(db, influx, pinger_factory, thread_pool) do |db, influx, pinger_factory, thread_pool|
       loop do
         ips = db.list_ips
         ips.each do |ip|
@@ -31,6 +31,7 @@ class PingDaemon
       thread_pool.shutdown
       thread_pool.wait_for_termination
     end.rescue(thread_pool) do |e, thread_pool|
+      p e
       thread_pool.shutdown
       thread_pool.wait_for_termination
     end

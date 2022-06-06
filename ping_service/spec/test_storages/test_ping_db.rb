@@ -12,4 +12,8 @@ class TestPingDb
   def add_ip(ip)
     @list << ip
   end
+
+  def delete_ip(ip)
+    @list.delete(ip)
+  end
 end
