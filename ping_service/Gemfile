@@ -9,9 +9,9 @@ gem 'connection_pool'
 gem 'daemons'
 gem 'influxdb-client-apis', '>=2.5.0'
 gem 'net-ping'
+gem 'pg'
 gem 'rom'
 gem 'rom-sql'
-gem 'pg'
 
 group :development do
   gem 'pry'
@@ -21,5 +21,6 @@ end
 group :test do
   gem 'rspec'
   gem 'simplecov'
+  gem 'timecop', '~> 0.9.5'
   gem 'webmock'
 end
