@@ -16,12 +16,14 @@ class PingStorage
   private
 
   def create_message(ip, failed, duration)
-    "ip,host=#{ip},failed=#{failed} response_time=#{duration_in_ms(duration)}"
+    InfluxDB2::Point.new(name: 'ip')
+                    .add_tag('host', ip)
+                    .add_tag('failed', failed)
+                    .add_field('response_time', duration_in_ms(duration))
   end
 
   def duration_in_ms(duration)
-    ## FIXME => change 0 to something normal
-    return 0 if duration.nil?
+    return duration if duration.nil?
 
     (duration * 1000).round(3)
   end
