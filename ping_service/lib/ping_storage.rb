@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 class PingStorage
-  attr_reader :influx_config
+  attr_reader :connection_pool
 
-  def initialize(root)
-    @influx_config = YAML.load_file("#{root}/ping_service/config/influx_config.yml")
-    @connection_pool = connect
+  def initialize(connection_pool)
+    @connection_pool = connection_pool
   end
 
   def call(ip, failed, duration)
@@ -15,17 +14,6 @@ class PingStorage
   end
 
   private
-
-  def connect
-    ConnectionPool.new(size: 10, timeout: 1) do
-      InfluxDB2::Client.new(influx_config['url'],
-                            influx_config['token'],
-                            bucket: influx_config['bucket'],
-                            org: influx_config['org'],
-                            use_ssl: false,
-                            precision: InfluxDB2::WritePrecision::NANOSECOND)
-    end
-  end
 
   def create_message(ip, failed, duration)
     "ip,host=#{ip},failed=#{failed} response_time=#{duration_in_ms(duration)}"

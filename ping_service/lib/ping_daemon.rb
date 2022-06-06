@@ -18,7 +18,7 @@ class PingDaemon
   def run
     storage = PingStorage.new(influx)
     loop do
-      ips = db.relations[:ips].where(enable: true).to_a.map(&:ip)
+      ips = db.ips_list
       ips.each do |ip|
         Thread.new { PingRunner.new(storage, pinger_factory, ip).call }.join
       end
