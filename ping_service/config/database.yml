@@ -13,6 +13,6 @@ development:
 test:
   <<: *default
   host: localhost
-  user: paulbarn
+  user: servers_test_user
   database: api_service_test
   port: 5432

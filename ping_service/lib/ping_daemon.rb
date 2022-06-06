@@ -24,7 +24,6 @@ class PingDaemon
           Thread.new { PingRunner.new(influx, pinger_factory, ip).call }.join
         end
         break if aborted.true?
-        print "Here"
 
         sleep(60)
       end

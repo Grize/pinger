@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative './lib/ping_daemon'
+require_relative './lib/ping_db'
 require 'rom'
 require 'rom-sql'
 require 'connection_pool'
