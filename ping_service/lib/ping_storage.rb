@@ -23,7 +23,7 @@ class PingStorage
   end
 
   def duration_in_ms(duration)
-    return duration if duration.nil?
+    return 0 if duration.nil?
 
     (duration * 1000).round(3)
   end
