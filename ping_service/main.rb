@@ -11,6 +11,8 @@ require 'influxdb-client-apis'
 require 'yaml'
 require 'pry'
 
+ENV['APP_ENV'] ||= 'development'
+
 root = File.expand_path('..', __dir__)
 influx_config = YAML.load_file("#{root}/ping_service/config/influx_config.yml")
 db_config = YAML.load_file("#{root}/ping_service/config/database.yml")[ENV['APP_ENV']]
