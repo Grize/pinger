@@ -6,7 +6,7 @@ default: &default
 development:
   <<: *default
   host: localhost
-  user: paulbarn
+  user: servers_test_dev
   database: api_service_dev
   port: 5432
 

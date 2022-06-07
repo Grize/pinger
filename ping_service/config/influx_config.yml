@@ -1,0 +1,5 @@
+defaults:  &defaults
+url: https://localhost:8086
+token: nEOnmIG6gvYo4LM6RtPAREmwi5YuDMWMdhtFJzL72WA-5gQBaEc4Mi_np3hODok4PNXTNIpmRzBaarRgd6C25g==
+bucket: servers
+org: servers
