@@ -29,9 +29,9 @@ end
 
 post '/add' do
   request.body.rewind
-  data = JSON.parse request.body.read
+  ip = JSON.parse(request.body.read)['ip']
 
-  record = settings.ip_repo_instance.by_ip(data['ip'])
+  record = settings.ip_repo_instance.by_ip(ip)
   record.nil? ? settings.ip_repo_instance.create(ip: ip) : update_record(ip, true)
 
   'Ip successfully enabled!'
@@ -39,10 +39,10 @@ end
 
 delete '/delete' do
   request.body.rewind
-  data = JSON.parse request.body.read
+  ip = JSON.parse(request.body.read)['ip']
 
-  record = settings.ip_repo_instance.by_ip(data['ip'])
-  record.nil? ? raise('Ip is not exist!') : update_record(data['ip'], false)
+  record = settings.ip_repo_instance.by_ip(ip)
+  record.nil? ? raise('Ip is not exist!') : update_record(ip, false)
 
   'Ip successfully disabled!'
 end
