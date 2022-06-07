@@ -28,6 +28,7 @@ class PingDaemon
         time_controller.wait!
       end
     end.then(thread_pool) do |thread_pool|
+      p "then"
       thread_pool.shutdown
       thread_pool.wait_for_termination
     end.rescue(thread_pool) do |e, thread_pool|

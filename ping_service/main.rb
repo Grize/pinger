@@ -36,4 +36,4 @@ end
 influx = PingStorage.new(influx_connection)
 db = PingDb.new(db_connection)
 
-PingDaemon.new(db, influx, PingerFactory, 10, IterationController.new(60)).run
+PingDaemon.new(db, influx, PingerFactory, 10, IterationController.new(60)).run.wait!
