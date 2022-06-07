@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative './lib/ping_daemon'
+require_relative './lib/ping_db'
+require_relative './lib/iteration_controller'
 require 'rom'
 require 'rom-sql'
 require 'connection_pool'
@@ -15,6 +17,7 @@ db_config = YAML.load_file("#{root}/ping_service/config/database.yml")[ENV['APP_
 db_url = "#{db_config['adapter']}://#{db_config['host']}/#{db_config['database']}"
 
 db_connection = ROM.container(:sql, db_url, port: db_config['port'], username: db_config['user']) do |config|
+  config.gateways[:default].use_logger(Logger.new($stdout))
   config.relation(:ips) do
     schema(infer: true)
     auto_struct true
@@ -30,8 +33,7 @@ influx_connection = ConnectionPool.new(size: 10, timeout: 1) do
                         precision: InfluxDB2::WritePrecision::NANOSECOND)
 end
 
-PingDaemon.new(db_connection, influx_connection, PingerFactory, 10).run
+influx = PingStorage.new(influx_connection)
+db = PingDb.new(db_connection)
 
-
-## TODO => планировщик
-## 1) планировщик 
+PingDaemon.new(db, influx, PingerFactory, 10, IterationController.new(60)).run.wait!
