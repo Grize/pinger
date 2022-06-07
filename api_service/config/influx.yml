@@ -5,7 +5,7 @@ default: &default
 development:
   <<: *default
   url: https://localhost:8086
-  token: "wmITzNEQqb-LpNeBTIT4DRbET2OtiwBqQGhoACWNDavst9PV2qPLCI7-Lo4vlZW1hr_2yF-lVql8GR6z7BmTJQ=="
+  token: nEOnmIG6gvYo4LM6RtPAREmwi5YuDMWMdhtFJzL72WA-5gQBaEc4Mi_np3hODok4PNXTNIpmRzBaarRgd6C25g==
 
 test:
   <<: *default
