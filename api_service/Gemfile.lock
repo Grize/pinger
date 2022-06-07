@@ -45,6 +45,7 @@ GEM
       influxdb-client (= 2.5.0)
       typhoeus (~> 1.0, >= 1.0.1)
     method_source (1.0.0)
+    multi_json (1.15.0)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     nio4r (2.5.8)
@@ -129,6 +130,12 @@ GEM
       rack (~> 2.2)
       rack-protection (= 2.2.0)
       tilt (~> 2.0)
+    sinatra-contrib (2.2.0)
+      multi_json
+      mustermann (~> 1.0)
+      rack-protection (= 2.2.0)
+      sinatra (= 2.2.0)
+      tilt (~> 2.0)
     tilt (2.0.10)
     transproc (1.1.1)
     typhoeus (1.4.0)
@@ -154,6 +161,7 @@ DEPENDENCIES
   rubocop
   simplecov
   sinatra
+  sinatra-contrib
   webmock
 
 BUNDLED WITH

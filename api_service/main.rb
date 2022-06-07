@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require 'sinatra'
+require 'sinatra/json'
 require 'rom'
 require 'yaml'
 require_relative './lib/ip_repo'
 require_relative './lib/ip_stats'
 require_relative './lib/ips'
+require_relative './lib/stats_serializer'
 
 configure do
   db_config = YAML.load_file("#{settings.root}/config/database.yml")[settings.environment.to_s]
@@ -50,12 +52,16 @@ delete '/ip' do
 end
 
 get '/statistic/:ip' do
-  IpStats.stats(
+  ## TODO => return 404 on empty result
+
+  result = IpStats.stats(
     settings.influx_connection,
     params['ip'],
     parse_time(params['start_date']),
     parse_time(params['end_date'])
   )
+
+  json StatsSerializer.new(result).as_json
 end
 
 def update_record(ip, value)

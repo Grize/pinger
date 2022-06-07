@@ -11,6 +11,7 @@ gem 'puma'
 gem 'rom'
 gem 'rom-sql'
 gem 'sinatra'
+gem 'sinatra-contrib'
 
 group :development do
   gem 'pry'

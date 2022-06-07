@@ -21,9 +21,9 @@ module IpStats
       query_api = influx.create_query_api
 
       result = query_api.query(query: query)
-      return result.to_json if result.empty?
+      return result if result.empty?
 
-      result[0].records.first.values.to_json
+      result[0].records.first.values
     end
 
     private
@@ -31,18 +31,45 @@ module IpStats
     def query
       query_list = QUERY_LIST.map { |sub_query| build_query(sub_query[:function], sub_query[:name]) }
       sub_queries = query_list.map { |sub_query| sub_query[:sub_query] }.join(',')
+      columns = query_list.map { |sub_query| sub_query[:column] }.concat(%w[host failed_count total_count])
 
-      %(union(tables: [#{sub_queries}])
+      %(union(tables: [#{sub_queries}, #{failed_query}, #{total_query}])
         |> pivot(rowKey: ["_start"], columnKey: ["_field"], valueColumn: "_value")
-        |> keep(columns: #{query_list.map { |sub_query| sub_query[:column] } << 'host'})
+        |> keep(columns: #{columns})
       )
     end
 
     def base_query
-      %(from(bucket:"servers")
+      %(
+        from(bucket:"servers")
+        |> range(start: #{@start_date}, stop: #{@end_date})
+        |> filter(fn: (r) => r["_measurement"] == "ip" and r["host"] == "#{@ip}" and r["failed"] == "false")
+        |> group(columns: ["host"])
+      )
+    end
+
+    def failed_query
+      %(
+        from(bucket:"servers")
         |> range(start: #{@start_date}, stop: #{@end_date})
         |> filter(fn: (r) => r["_measurement"] == "ip" and r["host"] == "#{@ip}")
         |> group(columns: ["host"])
+        |> map(fn: (r) => ({ r with _value: if r["failed"] == "true" then 1 else 0 }))
+        |> sum()
+        |> toFloat()
+        |> set(key: "_field", value: "failed_count")
+      )
+    end
+
+    def total_query
+      %(
+        from(bucket:"servers")
+        |> range(start: #{@start_date}, stop: #{@end_date})
+        |> filter(fn: (r) => r["_measurement"] == "ip" and r["host"] == "#{@ip}")
+        |> group(columns: ["host"])
+        |> count()
+        |> toFloat()
+        |> set(key: "_field", value: "total_count")
       )
     end
 

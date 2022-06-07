@@ -24,7 +24,7 @@ db_connection = ROM.container(:sql, db_url, port: db_config['port'], username: d
   end
 end
 
-influx_connection = ConnectionPool.new(size: 10, timeout: 1) do
+influx_connection = ConnectionPool.new(size: 2, timeout: 1) do
   InfluxDB2::Client.new(influx_config['url'],
                         influx_config['token'],
                         bucket: influx_config['bucket'],
