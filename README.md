@@ -40,6 +40,6 @@ GET /statistic/:ip?start_date=date&end_date=date
 ```
   cd ping_service
   bundle install
-  ruby daemon_controller.rb run
+  ruby daemon_controller.rb run #if you test on macOS required sudo
 ```
 
