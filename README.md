@@ -25,6 +25,17 @@
   ruby main.rb
 ```
 
+## API endpoints
+```
+POST /ip 
+body {ip: ip}
+
+DELETE /ip
+body {ip: ip}
+
+GET /statistic/:ip?start_date=date&end_date=date
+```
+
 ### Daemon Service
 ```
   cd ping_service
