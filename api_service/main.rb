@@ -27,24 +27,26 @@ configure do
   )
 end
 
-post '/add' do
+post '/ip' do
   request.body.rewind
   ip = JSON.parse(request.body.read)['ip']
 
   record = settings.ip_repo_instance.by_ip(ip)
   record.nil? ? settings.ip_repo_instance.create(ip: ip) : update_record(ip, true)
-
-  'Ip successfully enabled!'
+  status 201
 end
 
-delete '/delete' do
+delete '/ip' do
   request.body.rewind
   ip = JSON.parse(request.body.read)['ip']
 
   record = settings.ip_repo_instance.by_ip(ip)
-  record.nil? ? raise('Ip is not exist!') : update_record(ip, false)
-
-  'Ip successfully disabled!'
+  if record.nil?
+    status 404
+  else
+    update_record(ip, false)
+    status 204
+  end
 end
 
 get '/statistic/:ip' do
