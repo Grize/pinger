@@ -5,6 +5,8 @@ require 'rom/sql/rake_task'
 require 'yaml'
 require 'pry'
 
+ENV['APP_ENV'] ||= 'development'
+
 namespace :db do
   desc 'Create a database'
   task :setup do
