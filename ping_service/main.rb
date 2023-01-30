@@ -14,8 +14,8 @@ require 'pry'
 ENV['APP_ENV'] ||= 'development'
 
 root = File.expand_path('..', __dir__)
-influx_config = YAML.load_file("#{root}/ping_service/config/influx_config.yml")
-db_config = YAML.load_file("#{root}/ping_service/config/database.yml")[ENV['APP_ENV']]
+influx_config = YAML.load_file("#{root}/ping_service/config/influx_config.yml", aliases: true)
+db_config = YAML.load_file("#{root}/ping_service/config/database.yml", aliases: true)[ENV['APP_ENV']]
 db_url = "#{db_config['adapter']}://#{db_config['host']}/#{db_config['database']}"
 
 db_connection = ROM.container(:sql, db_url, port: db_config['port'], username: db_config['user']) do |config|

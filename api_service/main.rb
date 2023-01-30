@@ -10,8 +10,8 @@ require_relative './lib/ips'
 require_relative './lib/stats_serializer'
 
 configure do
-  db_config = YAML.load_file("#{settings.root}/config/database.yml")[settings.environment.to_s]
-  influx_config = YAML.load_file("#{settings.root}/config/influx.yml")[settings.environment.to_s]
+  db_config = YAML.load_file("#{settings.root}/config/database.yml", aliases: true)[settings.environment.to_s]
+  influx_config = YAML.load_file("#{settings.root}/config/influx.yml", aliases: true)[settings.environment.to_s]
   db_url = "#{db_config['adapter']}://#{db_config['host']}/#{db_config['database']}"
 
   con = ROM.container(:sql, db_url, port: db_config['port'], username: db_config['user']) do |conf|
@@ -34,7 +34,7 @@ post '/ip' do
   ip = JSON.parse(request.body.read)['ip']
 
   record = settings.ip_repo_instance.by_ip(ip)
-  record.nil? ? settings.ip_repo_instance.create(ip: ip) : update_record(ip, true)
+  record.nil? ? settings.ip_repo_instance.create(ip: ip, last_ping: time_now) : update_record(ip, true)
   status 201
 end
 
@@ -70,4 +70,8 @@ end
 
 def parse_time(time)
   DateTime.parse(time).rfc3339
+end
+
+def time_now
+  DateTime.now
 end
