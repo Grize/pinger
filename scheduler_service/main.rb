@@ -19,20 +19,7 @@ end
 
 redis_connection = Redis.new(url: redis_config[:url])
 
-redis_connection.del('ips')
+db = SchedulerDb.new(db_connection)
+redis = SchedulerRedis.new(redis_connection)
 
-loop do
-  ips.each do |ip|
-    redis_connection.rpush('ip', ip.ip)
-  end
-
-  sleep(1)
-end
-
-def ips
-  db_connection.relations[:ips].where(enable: true).where(Sequel.lit('last_ping > ?', time))
-end
-
-def time
-  Time.now - 60
-end
+Scheduler.new(db, redis).run
