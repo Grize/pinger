@@ -1,0 +1,20 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem 'pg'
+gem 'redis'
+gem 'redis-queue'
+gem 'rom'
+gem 'rom-sql'
+
+group :development do
+  gem 'pry'
+  gem 'rubocop'
+end
+
+group :test do
+  gem 'rspec'
+  gem 'simplecov'
+  gem 'webmock'
+end
