@@ -17,6 +17,7 @@ root = File.expand_path('..', __dir__)
 influx_config = YAML.load_file("#{root}/ping_service/config/influx_config.yml", aliases: true)
 db_config = YAML.load_file("#{root}/ping_service/config/database.yml", aliases: true)[ENV['APP_ENV']]
 db_url = "#{db_config['adapter']}://#{db_config['host']}/#{db_config['database']}"
+redis_config = YAML.load_file("#{root}/ping_service/config/redis.yml", aliases: true)[ENV['APP_ENV']]
 
 db_connection = ROM.container(:sql, db_url, port: db_config['port'], username: db_config['user']) do |config|
   config.gateways[:default].use_logger(Logger.new($stdout))
@@ -35,7 +36,10 @@ influx_connection = ConnectionPool.new(size: 2, timeout: 1) do
                         precision: InfluxDB2::WritePrecision::NANOSECOND)
 end
 
+redis_connection = Redis.new(url: redis_config[:url])
+
 influx = PingStorage.new(influx_connection)
 db = PingDb.new(db_connection)
+redis = PingRedis.new(redis_connection)
 
-PingDaemon.new(db, influx, PingerFactory, 10, IterationController.new(60)).run.wait!
+PingDaemon.new(db, influx, redis, PingerFactory, 10, IterationController.new(60)).run.wait!
