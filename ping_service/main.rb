@@ -10,6 +10,7 @@ require 'influxdb-client'
 require 'influxdb-client-apis'
 require 'yaml'
 require 'pry'
+require 'redis'
 
 ENV['APP_ENV'] ||= 'development'
 
