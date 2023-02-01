@@ -1,6 +1,22 @@
 # servers-test
 
 ## Setup
+```
+docker-compose create
+docker-compose start pg redis influx
+docker-compose run --rm api rake db:setup
+docker-compose run --rm api rake db:migrate
+docker exec -it influx_db influx setup
+organization name: servers
+bucket name: servers
+docker-compose up
+
+go to https://localhost:8086/
+login
+go to API Tokens
+Generate all access api token
+copy token in influx config
+```
 
 ### influxdb
 ```
@@ -8,21 +24,6 @@
   bucket name: servers
   org name: servers
   copy token in influx config
-```
-
-### Postgresql
-```
-  createuser servers_test_dev --createdb
-  createdatabase api_service_dev --owner=servers_test_dev
-```
-
-### API Service
-```
-  cd api_service
-  bundle install
-  rake db:setup
-  rake db:migrate
-  ruby main.rb
 ```
 
 ## API endpoints
@@ -35,11 +36,3 @@ body {ip: ip}
 
 GET /statistic/:ip?start_date=date&end_date=date
 ```
-
-### Daemon Service
-```
-  cd ping_service
-  bundle install
-  ruby daemon_controller.rb run #if you test on macOS required sudo
-```
-

@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
@@ -11,6 +9,7 @@ gem 'daemons'
 gem 'influxdb-client-apis', '>=2.5.0'
 gem 'net-ping'
 gem 'pg'
+gem 'redis'
 gem 'rom'
 gem 'rom-sql'
 

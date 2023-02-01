@@ -4,8 +4,8 @@ default: &default
 
 development:
   <<: *default
-  url: https://localhost:8086
-  token: token
+  url: http://influx_db:8086
+  token: 89EyV7C5AdsZYbDn7iJj3CyZSWTzEfhXQQiyRZpi4dd1VugIcnVU7Le6eE1TsQn6TB_8hvwn2HHD0CHNiULQsw==
 
 test:
   <<: *default

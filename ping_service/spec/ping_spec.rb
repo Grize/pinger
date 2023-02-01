@@ -81,7 +81,7 @@ RSpec.describe PingDaemon do
 
         let(:expected_result) do
           result = {}
-          ips.each { |ip, _|  result[ip] = initial_iteration_count + additional_iteration_count }
+          ips.each { |ip, _| result[ip] = initial_iteration_count + additional_iteration_count }
           result[deleted_ip] = initial_iteration_count
           result
         end
