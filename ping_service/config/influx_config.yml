@@ -5,7 +5,7 @@ default: &default
 development:
   <<: *default
   url: http://influx_db:8086
-  token: 7yGGg78o9zIV17WOIXmAq7uET-cn0nMq_5M53TuKPwwC2OgKx6kNUdiKeZT7JXZN58fNAU3IZFXTTaJka67Ctg==
+  token: 89EyV7C5AdsZYbDn7iJj3CyZSWTzEfhXQQiyRZpi4dd1VugIcnVU7Le6eE1TsQn6TB_8hvwn2HHD0CHNiULQsw==
 
 test:
   <<: *default

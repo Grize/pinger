@@ -2,7 +2,6 @@
 
 require_relative './lib/ping_daemon'
 require_relative './lib/ping_db'
-require_relative './lib/iteration_controller'
 require_relative './lib/ping_redis'
 require 'rom'
 require 'rom-sql'
@@ -44,4 +43,4 @@ influx = PingStorage.new(influx_connection)
 db = PingDb.new(db_connection)
 redis = PingRedis.new(redis_connection)
 
-PingDaemon.new(db, influx, redis, PingerFactory, 10, IterationController.new(1)).run.wait!
+PingDaemon.new(db, influx, redis, PingerFactory, 10).run.wait!
