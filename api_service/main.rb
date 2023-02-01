@@ -88,7 +88,6 @@ def parse_time(time)
 end
 
 def create_ip(params)
-  ping_period = params['ping_period']
   ip = params['ip']
 
   settings.ip_repo_instance.create(ip: ip, last_ping: time_now)
