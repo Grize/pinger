@@ -5,7 +5,7 @@ require_relative 'ping_storage'
 require 'concurrent'
 
 class PingDaemon
-  attr_reader :db, :influx, :pinger_factory, :thread_pool, :time_controller
+  attr_reader :db, :influx, :redis, :pinger_factory, :thread_pool, :time_controller
 
   def initialize(db, influx, redis, pinger_factory, pool_size, time_controller)
     @db = db
@@ -17,7 +17,7 @@ class PingDaemon
   end
 
   def run
-    Concurrent::Promises.future(db, influx, pinger_factory, thread_pool) do |db, influx, pinger_factory, thread_pool|
+    Concurrent::Promises.future(db, influx, redis, pinger_factory, thread_pool) do |db, influx, redis, pinger_factory, thread_pool|
       loop do
         ip = redis.fetch_first_element
         if ip

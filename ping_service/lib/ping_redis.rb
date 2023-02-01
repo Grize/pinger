@@ -1,4 +1,4 @@
-class SchedulerRedis
+class PingRedis
   attr_reader :connection
 
   def initialize(connection)

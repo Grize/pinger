@@ -8,7 +8,7 @@ class PingDb
   end
 
   def update_last_ping(ip)
-    db_connect.relation[:ips].first(ip: ip).update(last_ping: Time.now)
+    db_connect.relations[:ips].where(ip: ip).update(last_ping: Time.now)
   end
 
   def list_ips
