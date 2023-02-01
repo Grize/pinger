@@ -5,8 +5,9 @@ default: &default
 
 development:
   <<: *default
-  host: localhost
+  host: postgres_db
   user: servers_test_dev
+  password: postgres
   database: api_service_dev
   port: 5432
 
