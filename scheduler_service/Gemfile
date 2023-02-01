@@ -4,7 +4,6 @@ source "https://rubygems.org"
 
 gem 'pg'
 gem 'redis'
-gem 'redis-queue'
 gem 'rom'
 gem 'rom-sql'
 

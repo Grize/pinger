@@ -9,7 +9,7 @@ class Scheduler
   def run
     loop do
       db.list_ips.each do |ip|
-        redis.add_to_queue(ip)
+        redis.add_ip_to_queue(ip)
       end
 
       sleep(1)

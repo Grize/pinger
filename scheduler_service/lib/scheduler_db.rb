@@ -7,14 +7,7 @@ class SchedulerDb
 
   def list_ips
     db_connect.relations[:ips].where(enable: true)
-                              .where(Sequel.lit('last_ping > ?', time))
-                              .to_a
-                              .map(&:ip)
-  end
-
-  private
-
-  def time
-    Time.now - 60
+                              .where { Sequel[:last_ping] + Sequel[:ping_period] * Sequel.lit("interval '1 second'") < Time.now }
+                              .map { |ip| ip[:ip] }
   end
 end
