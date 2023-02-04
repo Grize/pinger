@@ -4,6 +4,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 gem 'dotenv'
 gem 'influxdb-client-apis', '>=2.5.0'
+gem 'ougai'
 gem 'pg'
 gem 'puma'
 gem 'rom'

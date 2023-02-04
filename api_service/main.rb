@@ -4,6 +4,7 @@ require 'sinatra'
 require 'sinatra/json'
 require 'rom'
 require 'yaml'
+require_relative './lib/logger_client'
 require_relative './lib/ip_repo'
 require_relative './lib/ip_stats'
 require_relative './lib/ips'
@@ -18,6 +19,7 @@ configure do
     conf.register_relation(Relations::Ips)
   end
 
+  set :str_logger, LoggerClient.new
   set :bind, '0.0.0.0'
   set :ip_repo_instance, Repos::IpRepo.new(con)
   set :influx_connection, InfluxDB2::Client.new(
@@ -33,6 +35,10 @@ end
 post '/ip' do
   request.body.rewind
   params = JSON.parse(request.body.read)
+  settings.str_logger.call(:error, {
+    msg: params, method: request.request_method,
+    path: request.path
+  })
   ip = params['ip']
 
   record = settings.ip_repo_instance.by_ip(ip)
